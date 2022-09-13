@@ -1,0 +1,69 @@
+const {
+  createInput,
+  getAll,
+  getById,
+  updateInput,
+  deleteInput,
+  getByMonth,
+} = require("../repositories/input.repository");
+const { inputValidation } = require("../validations/input.validation");
+
+exports.create = async (req, res) => {
+  try {
+    await inputValidation.validate(req.body);
+    const input = await createInput(req.body);
+    res.status(200).send(input);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
+  }
+};
+
+exports.get = async (req, res) => {
+  try {
+    const inputs = await getAll();
+    res.status(200).send(inputs);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.getId = async (req, res) => {
+  try {
+    const input = await getById(Number(req.params.id));
+    res.status(200).send(input);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.update = async (req, res) => {
+  try {
+    const input = await updateInput(Number(req.params.id), req.body);
+    res.status(200).send(input);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    await deleteInput(Number(req.params.id));
+    res.status(200).send();
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.getMonth = async (req, res) => {
+  try {
+    if (!req.query.month) {
+      throw { message: "Month é obrigatório" };
+    }
+
+    const inputs = await getByMonth(req.query.month, Number(req.params.id));
+    res.status(200).send(inputs);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
