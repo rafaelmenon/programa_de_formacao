@@ -10,6 +10,7 @@ const { inputValidation } = require("../validations/input.validation");
 
 exports.create = async (req, res) => {
   try {
+    req.body.userId = req.user.id;
     await inputValidation.validate(req.body);
     const input = await createInput(req.body);
     res.status(200).send(input);
@@ -42,6 +43,7 @@ exports.update = async (req, res) => {
     const input = await updateInput(Number(req.params.id), req.body);
     res.status(200).send(input);
   } catch (e) {
+    console.log(e);
     res.status(400).send(e);
   }
 };
